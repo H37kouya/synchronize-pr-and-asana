@@ -174,7 +174,7 @@ function run() {
                 client: asanaClient,
                 taskGid
             });
-            console.log(task);
+            // console.log(task);
             const allowCustomFields = customFields ? customFields.split(',') : [];
             const taskCustomFields = task.custom_fields.filter(cf => allowCustomFields.includes(cf.name));
             yield helper_1.addLabels(client, prNumber, [
