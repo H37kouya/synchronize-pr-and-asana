@@ -24,9 +24,9 @@ export class AsanaTaskUrl {
     value: string
   ) {
     // 末尾のスラッシュを削除
-    const trimLastSlush = value.replace(/\/$/, '');
+    const trimLastSlush = value.replace(/\/$/, "");
     // 末尾の /f を削除
-    const trimF = trimLastSlush.replace(/\/f$/, '');
+    const trimF = trimLastSlush.replace(/\/f$/, "");
 
     const formatUrl = trimF;
 
