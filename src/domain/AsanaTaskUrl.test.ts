@@ -1,5 +1,5 @@
 import { ASANA_URL } from "../const";
-import { AsanaTaskUrl } from './AsanaTaskUrl'
+import { AsanaTaskUrl } from "./AsanaTaskUrl";
 
 describe("AsanaTaskUrl", () => {
   describe("インスタンスを生成できる", () => {
@@ -10,26 +10,26 @@ describe("AsanaTaskUrl", () => {
 
     const testCases: TestCase[] = [
       {
-        arg: ASANA_URL('/foo/bar'),
-        expected: ASANA_URL('/foo/bar')
+        arg: ASANA_URL("/foo/bar"),
+        expected: ASANA_URL("/foo/bar")
       },
       {
-        arg: ASANA_URL('/foo/bar/'),
-        expected: ASANA_URL('/foo/bar')
+        arg: ASANA_URL("/foo/bar/"),
+        expected: ASANA_URL("/foo/bar")
       }
-    ]
+    ];
 
     testCases.forEach(testCase => {
       it(`arg=${testCase.arg}, expected=${testCase.expected}`, () => {
         // WHEN
-        const actual = AsanaTaskUrl.of(testCase.arg)
+        const actual = AsanaTaskUrl.of(testCase.arg);
 
         // THEN
-        expect(actual).toBeInstanceOf(AsanaTaskUrl)
-        expect(actual.get()).toBe(testCase.expected)
-      })
-    })
-  })
+        expect(actual).toBeInstanceOf(AsanaTaskUrl);
+        expect(actual.get()).toBe(testCase.expected);
+      });
+    });
+  });
 
   describe("taskGidを取得できる", () => {
     type TestCase = {
@@ -39,24 +39,24 @@ describe("AsanaTaskUrl", () => {
 
     const testCases: TestCase[] = [
       {
-        arg: ASANA_URL('/foo/bar'),
-        expected: 'bar'
+        arg: ASANA_URL("/foo/bar"),
+        expected: "bar"
       },
       {
-        arg: ASANA_URL('/foo/bar/'),
-        expected: 'bar'
+        arg: ASANA_URL("/foo/bar/"),
+        expected: "bar"
       }
-    ]
+    ];
 
     testCases.forEach(testCase => {
       it(`arg=${testCase.arg}, expected=${testCase.expected}`, () => {
         // WHEN
-        const actual = AsanaTaskUrl.of(testCase.arg)
+        const actual = AsanaTaskUrl.of(testCase.arg);
 
         // THEN
-        expect(actual).toBeInstanceOf(AsanaTaskUrl)
-        expect(actual.taskGid()).toBe(testCase.expected)
-      })
-    })
-  })
-})
+        expect(actual).toBeInstanceOf(AsanaTaskUrl);
+        expect(actual.taskGid()).toBe(testCase.expected);
+      });
+    });
+  });
+});

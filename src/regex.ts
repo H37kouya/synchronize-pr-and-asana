@@ -21,9 +21,12 @@ export const extractionAsanaUrl = (
     return undefined;
   }
 
-  return linkList[0].replace(" ", "")
-    // task:の削除
-    .replace("task:", "")
-    // 末尾のスラッシュ削除
-    .replace(/\/$/, '');
+  return (
+    linkList[0]
+      .replace(" ", "")
+      // task:の削除
+      .replace("task:", "")
+      // 末尾のスラッシュ削除
+      .replace(/\/$/, "")
+  );
 };

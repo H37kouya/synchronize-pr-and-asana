@@ -1,3 +1,4 @@
-import { Client } from 'asana'
+import { Client } from "asana";
 
-export const createAsanaClient = (accessToken: string) => Client.create().useAccessToken(accessToken);
+export const createAsanaClient = (accessToken: string) =>
+  Client.create().useAccessToken(accessToken);
