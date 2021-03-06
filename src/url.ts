@@ -1,4 +1,4 @@
-import { URL } from 'node:url'
+import { URL } from 'url'
 
 export const getLastPath = (url: string) => {
   // 末尾のスラッシュを削除
