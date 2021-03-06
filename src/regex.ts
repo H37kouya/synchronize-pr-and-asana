@@ -1,4 +1,11 @@
-
+/**
+ * AsanaのURLを文中から取得する
+ *
+ * 取得する条件はtask: から始まるもの
+ * task: ASANA_URL
+ *
+ * @param content
+ */
 export const extractionAsanaUrl = (content?: string): string | undefined => {
   if (!content) {
     return undefined

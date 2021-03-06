@@ -121,14 +121,49 @@ describe('regex', () => {
       })
     })
 
-    describe('asanaのURLが文が存在しない(undefined)とき、undefinedである', () => {
+    describe('asanaのURLが複数あるとき、最初の1つ目を取得する', () => {
+      type TestCase = {
+        content: string
+        expected: string
+      }
+
+      const testCases: TestCase[] = [
+        {
+          content: `\
+            関係ない言葉1
+            関係ない言葉2
+            task: ${ASANA_URL('/hogehoge1')}
+            task: ${ASANA_URL('/hogehoge2')}
+          `,
+          expected: ASANA_URL('/hogehoge1')
+        },
+        {
+          content: `\
+            task: ${ASANA_URL('/foo/bar1')}
+            関係ない言葉1
+            関係ない言葉2
+            task: ${ASANA_URL('/foo/bar2')}
+          `,
+          expected: ASANA_URL('/foo/bar1')
+        },
+      ]
+
+      testCases.forEach(testCase => {
+        it(`content=${testCase.content}, expected=${testCase.expected}`, () => {
+          expect(extractionAsanaUrl(testCase.content)).toBe(testCase.expected)
+        })
+      })
+    })
+
+    describe('task: で始まるAsanaのURLがないときは、undefinedである', () => {
       type TestCase = {
         content?: string
       }
 
       const testCases: TestCase[] = [
-        { content: undefined },
-        { content: '' },
+        { content: ASANA_URL('/hogehoge') },
+        { content: `task= ${ASANA_URL('/hogehoge')}` },
+        { content: `task ${ASANA_URL('/hogehoge')}` },
       ]
 
       testCases.forEach(testCase => {
@@ -138,8 +173,24 @@ describe('regex', () => {
       })
     })
 
-    it('asanaのURLが文中にないとき、undefinedである', () => {
+    describe('asanaのURLが文が存在しないとき、undefinedである', () => {
+      type TestCase = {
+        content?: string
+      }
 
+      const testCases: TestCase[] = [
+        { content: undefined },
+        { content: '' },
+        { content: '関係ない言葉' },
+        { content: 'https://github.com' },
+        { content: 'https://github.com/H37kouya' },
+      ]
+
+      testCases.forEach(testCase => {
+        it(`content=${testCase.content}`, () => {
+          expect(extractionAsanaUrl(testCase.content)).toBeUndefined()
+        })
+      })
     })
   })
 })
