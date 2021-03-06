@@ -44,9 +44,9 @@ class AsanaTaskUrl {
 exports.AsanaTaskUrl = AsanaTaskUrl;
 AsanaTaskUrl.of = function (value) {
     // 末尾のスラッシュを削除
-    const trimLastSlush = value.replace(/\/$/, '');
+    const trimLastSlush = value.replace(/\/$/, "");
     // 末尾の /f を削除
-    const trimF = trimLastSlush.replace(/\/f$/, '');
+    const trimF = trimLastSlush.replace(/\/f$/, "");
     const formatUrl = trimF;
     const newUrl = new url_1.URL(formatUrl);
     if (`${newUrl.origin}/0` !== const_1.ASANA_BASE_URL)
@@ -144,6 +144,7 @@ function run() {
         try {
             const token = core_1.getInput("repo-token", { required: true });
             const asanaClientToken = core_1.getInput("asana-token", { required: true });
+            const customFields = core_1.getInput("custom-fields");
             const prNumber = helper_1.getPrNumber();
             if (!prNumber) {
                 console.log("Could not get pull request number from context, exiting");
@@ -174,10 +175,12 @@ function run() {
                 taskGid
             });
             console.log(task);
+            const allowCustomFields = customFields ? customFields.split(',') : [];
+            const taskCustomFields = task.custom_fields.filter(cf => allowCustomFields.includes(cf.name));
             yield helper_1.addLabels(client, prNumber, [
-                taskGid,
-                task.name,
-                ...task.tags.map(tag => tag.name)
+                ...task.tags.map(tag => tag.name),
+                // @ts-ignore
+                ...taskCustomFields.map(cf => cf.display_value)
             ]);
         }
         catch (error) {
