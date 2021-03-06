@@ -19,7 +19,7 @@ jobs:
   synchronize-pr-and-asana:
     runs-on: ubuntu-latest
     steps:
-    - uses: H37kouya/synchronize-pr-and-asana@v1
+    - uses: H37kouya/synchronize-pr-and-asana@alpha
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         asana-token: "${{ secrets.ASANA_PERSONAL_ACCESS_TOKEN }}"
@@ -32,6 +32,7 @@ Inputs
 Various inputs are defined in action.yml to let you configure the synchronize-pr-and-asana:
 
 | Name | Description | Default |
+| ---|---|---|
 | repo-token | Token to use to authorize label changes. Typically the GITHUB_TOKEN secret | N/A |
 | asana-token | Token to use to authorize asana. | N/A |
 | custom-fields | The name of the tag you want to reflect in the PR <br> example: "優先度,ステータス" | '' |
