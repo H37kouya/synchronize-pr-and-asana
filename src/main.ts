@@ -1,13 +1,15 @@
 import { getInput, setFailed } from "@actions/core";
 import { getOctokit, context as GitHubContext } from "@actions/github";
+import { createAsanaClient } from "./repository/asana";
 import { addLabels, getPrNumber } from "./helper";
 import { extractionAsanaUrl } from "./regex";
+import { AsanaTaskUrl } from "./domain/AsanaTaskUrl";
 
 // most @actions toolkit packages have async methods
 async function run() {
   try {
     const token = getInput("repo-token", { required: true });
-    const asanaToken = getInput("asana-token", { required: true });
+    const asanaClientToken = getInput("asana-token", { required: true });
 
     const prNumber = getPrNumber();
     if (!prNumber) {
@@ -29,14 +31,23 @@ async function run() {
     /**
      * PRの説明からAsanaのURLを取得する
      */
-    const asanaUrl = extractionAsanaUrl(pullRequest.body);
+    const asanaTaskUrl = extractionAsanaUrl(pullRequest.body);
 
-    if (!asanaUrl) {
+    if (!asanaTaskUrl) {
       console.info("asanaのURLが存在しませんでした。");
       return;
     }
 
-    await addLabels(client, prNumber, [asanaUrl]);
+    const asanaTaskUrlEntity = new AsanaTaskUrl(asanaTaskUrl)
+    const taskGid = asanaTaskUrlEntity.taskGid()
+
+    console.info(taskGid)
+
+    const asanaClient = createAsanaClient(asanaClientToken)
+
+    await addLabels(client, prNumber, [
+      taskGid
+    ]);
   } catch (error) {
     setFailed(error.message);
   }
