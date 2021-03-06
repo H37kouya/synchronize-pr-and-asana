@@ -11,6 +11,7 @@ async function run() {
   try {
     const token = getInput("repo-token", { required: true });
     const asanaClientToken = getInput("asana-token", { required: true });
+    const customFields = getInput("custom-fields");
 
     const prNumber = getPrNumber();
     if (!prNumber) {
@@ -51,10 +52,13 @@ async function run() {
     });
     console.log(task);
 
+    const allowCustomFields = customFields ? customFields.split(',') : []
+    const taskCustomFields = task.custom_fields.filter(cf => allowCustomFields.includes(cf.name))
+
     await addLabels(client, prNumber, [
-      taskGid,
-      task.name,
-      ...task.tags.map(tag => tag.name)
+      ...task.tags.map(tag => tag.name),
+      // @ts-ignore
+      ...taskCustomFields.map(cf => cf.display_value)
     ]);
   } catch (error) {
     setFailed(error.message);
