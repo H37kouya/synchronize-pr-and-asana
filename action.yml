@@ -1,12 +1,14 @@
-name: 'H37kouya-label-demo'
-description: 'Wait a designated number of milliseconds'
+name: 'synchronize-pr-and-asana'
+description: 'AsanaのタグをPRのラベルに反映させる'
 inputs:
   repo-token:
     description: 'GitHub Token'
     required: true
   asana-token:
-    description: 'GitHub Token'
+    description: 'Asana personal access token'
     required: true
+  custom-fields:
+      description: 'カスタムフィールドの値 example: 優先度,ステータス'
 outputs:
   time: # output will be available to future steps
     description: 'The message to output'
