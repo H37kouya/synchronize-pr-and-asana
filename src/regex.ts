@@ -6,15 +6,19 @@
  *
  * @param content
  */
-export const extractionAsanaUrl = (content?: string|null): string | undefined => {
+export const extractionAsanaUrl = (
+  content?: string | null
+): string | undefined => {
   if (!content) {
-    return undefined
+    return undefined;
   }
-  const linkList = content.match(/task: https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/);
+  const linkList = content.match(
+    /task: https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/
+  );
 
   if (!linkList || linkList.length === 0) {
-    return undefined
+    return undefined;
   }
 
-  return linkList[0].replace(' ', '').replace('task:', '')
-}
+  return linkList[0].replace(" ", "").replace("task:", "");
+};
