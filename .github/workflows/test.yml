@@ -3,13 +3,12 @@ on:
   pull_request:
 
 jobs:
-  # unit tests
-  # units:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - run: npm ci
-  #   - run: npm test
+  units:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: npm ci
+    - run: npm test
 
   # test action works running from the graph
   test:
@@ -19,4 +18,4 @@ jobs:
     - uses: ./
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        asana-token: "${{ secrets.GITHUB_TOKEN }}"
+        asana-token: "${{ secrets.ASANA_PERSONAL_ACCESS_TOKEN }}"

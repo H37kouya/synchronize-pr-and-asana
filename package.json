@@ -26,7 +26,9 @@
   "homepage": "https://github.com/H37kouya/action-adding-label#readme",
   "dependencies": {
     "@actions/core": "^1.2.5",
-    "@actions/github": "^4.0.0"
+    "@actions/github": "^4.0.0",
+    "@types/asana": "^0.18.1",
+    "asana": "^0.18.5"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",

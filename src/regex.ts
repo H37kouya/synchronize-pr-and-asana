@@ -1,5 +1,6 @@
 /**
- * AsanaのURLを文中から取得する
+ * AsanaのURLを文中から取得する。
+ * また、末尾のスラッシュは必ず存在しない。
  *
  * 取得する条件はtask: から始まるもの
  * task: ASANA_URL
@@ -20,5 +21,12 @@ export const extractionAsanaUrl = (
     return undefined;
   }
 
-  return linkList[0].replace(" ", "").replace("task:", "");
+  return (
+    linkList[0]
+      .replace(" ", "")
+      // task:の削除
+      .replace("task:", "")
+      // 末尾のスラッシュ削除
+      .replace(/\/$/, "")
+  );
 };
