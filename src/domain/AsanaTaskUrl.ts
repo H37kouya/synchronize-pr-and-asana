@@ -1,7 +1,7 @@
 import { URL } from "url";
 import { ASANA_BASE_URL } from "../const";
 import { getLastPath } from "../url";
-import { InvalidArgumentError } from './InvalidArgumentError'
+import { InvalidArgumentError } from "./InvalidArgumentError";
 
 declare const Unique: unique symbol;
 
@@ -15,9 +15,7 @@ export class AsanaTaskUrl {
     return this.value;
   }
 
-  public eq(
-    valueObject: AsanaTaskUrl
-  ): boolean {
+  public eq(valueObject: AsanaTaskUrl): boolean {
     return valueObject.get() === this.value;
   }
 
@@ -26,24 +24,27 @@ export class AsanaTaskUrl {
     value: string
   ) {
     // 末尾のスラッシュを削除
-    const trimLastSlush = value.replace(/\/$/, '')
+    const trimLastSlush = value.replace(/\/$/, '');
     // 末尾の /f を削除
-    const trimF = trimLastSlush.replace(/\/f$/, '')
+    const trimF = trimLastSlush.replace(/\/f$/, '');
 
-    const formatUrl = trimF
+    const formatUrl = trimF;
 
-    const newUrl = new URL(formatUrl)
+    const newUrl = new URL(formatUrl);
 
     if (`${newUrl.origin}/0` !== ASANA_BASE_URL)
       throw new InvalidArgumentError(
         `有効なAsanaのタスクURLではありません。ASANA_BASE_URLが異なります。 origin=${newUrl.origin}/0, value=${value}`
-      )
-    if (newUrl.pathname.split('/').length !== 4) throw new InvalidArgumentError(`有効なAsanaのタスクURLではありません。パスの数が異なります。value=${value}`)
+      );
+    if (newUrl.pathname.split("/").length !== 4)
+      throw new InvalidArgumentError(
+        `有効なAsanaのタスクURLではありません。パスの数が異なります。value=${value}`
+      );
 
     return new this(formatUrl);
   };
 
   public taskGid() {
-    return getLastPath(this.value)
+    return getLastPath(this.value);
   }
 }

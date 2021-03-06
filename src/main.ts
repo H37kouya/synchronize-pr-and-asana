@@ -39,17 +39,17 @@ async function run() {
       return;
     }
 
-    const asanaTaskUrlEntity = AsanaTaskUrl.of(asanaTaskUrl)
-    const taskGid = asanaTaskUrlEntity.taskGid()
+    const asanaTaskUrlEntity = AsanaTaskUrl.of(asanaTaskUrl);
+    const taskGid = asanaTaskUrlEntity.taskGid();
 
-    console.info(taskGid)
+    console.info(taskGid);
 
-    const asanaClient = createAsanaClient(asanaClientToken)
+    const asanaClient = createAsanaClient(asanaClientToken);
     const task = await getTask({
       client: asanaClient,
       taskGid
-    })
-    console.log(task)
+    });
+    console.log(task);
 
     await addLabels(client, prNumber, [
       taskGid,

@@ -1,12 +1,12 @@
-import { URL } from 'url'
+import { URL } from "url";
 
 export const getLastPath = (url: string) => {
   // 末尾のスラッシュを削除
-  const formatUrl = url.replace(/\/$/, '')
+  const formatUrl = url.replace(/\/$/, "");
 
-  const urlEntity = new URL(formatUrl)
+  const urlEntity = new URL(formatUrl);
 
-  const paths = urlEntity.pathname.split('/').reverse()
+  const paths = urlEntity.pathname.split("/").reverse();
 
-  return paths[0]
-}
+  return paths[0];
+};
