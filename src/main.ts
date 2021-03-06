@@ -6,6 +6,7 @@ import { addLabels, getPrNumber } from './helper'
 async function run() {
   try {
     const token = getInput("repo-token", { required: true });
+    const asanaToken = getInput("asana-token", { required: true });
 
     const prNumber = getPrNumber();
     if (!prNumber) {
