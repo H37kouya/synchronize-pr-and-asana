@@ -1,6 +1,7 @@
 import { getInput, setFailed } from "@actions/core";
 import { getOctokit, context as GitHubContext } from "@actions/github";
 import { createAsanaClient } from "./repository/asana";
+import { getTask } from "./repository/asana/task";
 import { addLabels, getPrNumber } from "./helper";
 import { extractionAsanaUrl } from "./regex";
 import { AsanaTaskUrl } from "./domain/AsanaTaskUrl";
@@ -38,15 +39,22 @@ async function run() {
       return;
     }
 
-    const asanaTaskUrlEntity = new AsanaTaskUrl(asanaTaskUrl)
+    const asanaTaskUrlEntity = AsanaTaskUrl.of(asanaTaskUrl)
     const taskGid = asanaTaskUrlEntity.taskGid()
 
     console.info(taskGid)
 
     const asanaClient = createAsanaClient(asanaClientToken)
+    const task = await getTask({
+      client: asanaClient,
+      taskGid
+    })
+    console.log(task)
 
     await addLabels(client, prNumber, [
-      taskGid
+      taskGid,
+      task.name,
+      ...task.tags.map(tag => tag.name)
     ]);
   } catch (error) {
     setFailed(error.message);
