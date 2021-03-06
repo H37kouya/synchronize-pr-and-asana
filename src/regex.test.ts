@@ -175,12 +175,13 @@ describe('regex', () => {
 
     describe('asanaのURLが文が存在しないとき、undefinedである', () => {
       type TestCase = {
-        content?: string
+        content?: string|null
       }
 
       const testCases: TestCase[] = [
         { content: undefined },
         { content: '' },
+        { content: null },
         { content: '関係ない言葉' },
         { content: 'https://github.com' },
         { content: 'https://github.com/H37kouya' },

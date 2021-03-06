@@ -1,6 +1,7 @@
 import{ getInput, setFailed } from '@actions/core'
 import { getOctokit, context as GitHubContext } from "@actions/github"
 import { addLabels, getPrNumber } from './helper'
+import { extractionAsanaUrl } from './regex'
 
 // most @actions toolkit packages have async methods
 async function run() {
@@ -25,8 +26,18 @@ async function run() {
 
     console.info(pullRequest)
 
+    /**
+     * PRの説明からAsanaのURLを取得する
+     */
+    const asanaUrl = extractionAsanaUrl(pullRequest.body)
+
+    if (!asanaUrl) {
+      console.info('asanaのURLが存在しませんでした。')
+      return
+    }
+
     await addLabels(client, prNumber, [
-      'Hello World'
+      asanaUrl
     ])
   } catch (error) {
     setFailed(error.message);

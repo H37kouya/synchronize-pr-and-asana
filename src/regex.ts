@@ -6,7 +6,7 @@
  *
  * @param content
  */
-export const extractionAsanaUrl = (content?: string): string | undefined => {
+export const extractionAsanaUrl = (content?: string|null): string | undefined => {
   if (!content) {
     return undefined
   }
