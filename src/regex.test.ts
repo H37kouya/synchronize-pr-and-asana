@@ -16,7 +16,7 @@ describe("regex", () => {
         },
         {
           content: `task: ${ASANA_URL("/hogehoge/")}`,
-          expected: ASANA_URL("/hogehoge/")
+          expected: ASANA_URL("/hogehoge")
         },
         {
           content: `task: ${ASANA_URL("/foo/bar")}`,
@@ -24,7 +24,7 @@ describe("regex", () => {
         },
         {
           content: `task: ${ASANA_URL("/foo/bar/")}`,
-          expected: ASANA_URL("/foo/bar/")
+          expected: ASANA_URL("/foo/bar")
         },
         {
           content: `\
