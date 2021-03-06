@@ -1,26 +1,43 @@
 import { URL } from "url";
 import { ASANA_BASE_URL } from "../const";
 import { getLastPath } from "../url";
-import { ValueObject } from "./ValueObject";
 import { InvalidArgumentError } from './InvalidArgumentError'
 
 declare const Unique: unique symbol;
 
-export class AsanaTaskUrl extends ValueObject<string> {
+export class AsanaTaskUrl {
   // @ts-ignore
   private [Unique]: void;
 
-  constructor(protected val: string) {
-    super(val)
+  constructor(protected value: string) {}
 
-    const newUrl = new URL(val)
+  public get() {
+    return this.value;
+  }
+
+  public eq(
+    valueObject: AsanaTaskUrl
+  ): boolean {
+    return valueObject.get() === this.value;
+  }
+
+  public static of = function(
+    this: new (value: string) => AsanaTaskUrl,
+    value: string
+  ) {
+    // 末尾のスラッシュを削除
+    const formatUrl = value.replace(/\/$/, '')
+
+    const newUrl = new URL(formatUrl)
 
     if (`${newUrl.origin}/0` !== ASANA_BASE_URL)
       throw new InvalidArgumentError(
-        `有効なAsanaのタスクURLではありません。ASANA_BASE_URLが異なります。 origin=${newUrl.origin}/0, val=${val}`
+        `有効なAsanaのタスクURLではありません。ASANA_BASE_URLが異なります。 origin=${newUrl.origin}/0, value=${value}`
       )
-    if (newUrl.pathname.split('/').length !== 4) throw new InvalidArgumentError(`有効なAsanaのタスクURLではありません。パスの数が異なります。val=${val}`)
-  }
+    if (newUrl.pathname.split('/').length !== 4) throw new InvalidArgumentError(`有効なAsanaのタスクURLではありません。パスの数が異なります。value=${value}`)
+
+    return new this(formatUrl);
+  };
 
   public taskGid() {
     return getLastPath(this.value)
