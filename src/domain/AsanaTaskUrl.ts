@@ -1,5 +1,5 @@
 import { URL } from "url";
-import { ASANA_BASE_URL } from "../const";
+import { ASANA_BASE_URL } from "../utils/const";
 import { getLastPath } from "../url";
 import { InvalidArgumentError } from "./InvalidArgumentError";
 

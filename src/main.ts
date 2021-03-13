@@ -2,7 +2,7 @@ import { getInput, setFailed } from "@actions/core";
 import { getOctokit, context as GitHubContext } from "@actions/github";
 import { createAsanaClient } from "./repository/asana";
 import { getTask } from "./repository/asana/task";
-import { extractionAsanaUrl } from "./regex";
+import { extractionAsanaUrl } from "./utils/regex";
 import { AsanaTaskUrl } from "./domain/AsanaTaskUrl";
 import { addLabels } from "./repository/github/label";
 import { inProgressPullRequest } from "./service/pullRequest";
