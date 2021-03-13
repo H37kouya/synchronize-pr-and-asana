@@ -1,4 +1,4 @@
-import { ASANA_URL } from "../const";
+import { ASANA_URL } from "../utils/const";
 import { AsanaTaskUrl } from "./AsanaTaskUrl";
 
 describe("AsanaTaskUrl", () => {
