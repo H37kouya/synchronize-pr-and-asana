@@ -14,17 +14,23 @@ export const extractionAsanaUrl = (
     return undefined;
   }
   const linkList = content.match(
-    /Asana task link: https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/
+    /AsanaTaskLink: https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/
+  ) || content.match(
+    /AsanaTaskLink:https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/
   );
+
+  console.info(`linkList = ${linkList}`)
 
   if (!linkList || linkList.length === 0) {
     return undefined;
   }
 
+  console.info(`linkList[0] = ${linkList[0]}`)
+
   return (
     linkList[0]
       // task:の削除
-      .replace("Asana task link:", "")
+      .replace("AsanaTaskLink:", "")
       .replace(" ", "")
       // 末尾のスラッシュ削除
       .replace(/\/$/, "")
