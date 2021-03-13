@@ -1,4 +1,3 @@
-import * as core from "@actions/core";
 import { getOctokit, context as GitHubContext } from "@actions/github";
 
 export const addLabels = async (
@@ -12,13 +11,4 @@ export const addLabels = async (
     issue_number: prNumber,
     labels: labels
   });
-};
-
-export const getPrNumber = (): number | undefined => {
-  const pullRequest = GitHubContext.payload.pull_request;
-  if (!pullRequest) {
-    return undefined;
-  }
-
-  return pullRequest.number;
 };

@@ -1,4 +1,4 @@
-import { ASANA_URL } from "../const";
+import { ASANA_URL } from "../utils/const";
 import { AsanaTaskUrl } from "./AsanaTaskUrl";
 
 describe("AsanaTaskUrl", () => {
@@ -48,6 +48,10 @@ describe("AsanaTaskUrl", () => {
       },
       {
         arg: ASANA_URL("/foo/bar/"),
+        expected: "bar"
+      },
+      {
+        arg: ASANA_URL("/foo/bar/f"),
         expected: "bar"
       }
     ];

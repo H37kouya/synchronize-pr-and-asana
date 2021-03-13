@@ -1,6 +1,6 @@
 import { URL } from "url";
-import { ASANA_BASE_URL } from "../const";
-import { getLastPath } from "../url";
+import { ASANA_BASE_URL } from "../utils/const";
+import { getLastPath } from "../utils/url";
 import { InvalidArgumentError } from "./InvalidArgumentError";
 
 declare const Unique: unique symbol;
