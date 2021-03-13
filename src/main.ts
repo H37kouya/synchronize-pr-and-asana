@@ -30,6 +30,10 @@ async function run() {
 
     const asanaTaskUrlEntity = AsanaTaskUrl.of(asanaTaskUrl);
     const taskGid = asanaTaskUrlEntity.taskGid();
+    if (!taskGid) {
+      console.info("taskGidが取得できませんでした");
+      return;
+    }
 
     console.info(taskGid);
 
