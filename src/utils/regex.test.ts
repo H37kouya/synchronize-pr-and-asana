@@ -72,7 +72,19 @@ describe("regex", () => {
             関係ない言葉
           `,
           expected: ASANA_URL("/foo/bar")
-        }
+        },
+        {
+          content: "# What you've done for this PR\r\n" +
+          '\r\n' +
+          'AsanaTaskLink: https://app.asana.com/0/foo/bar/f\r\n' +
+          '\r\n' +
+          '# Others\r\n' +
+          '\r\n' +
+          '- [ ]\r\n' +
+          '- [ ]\r\n' +
+          '- [ ]\r\n',
+          expected: ASANA_URL("/foo/bar/f")
+        },
       ];
 
       testCases.forEach(testCase => {
