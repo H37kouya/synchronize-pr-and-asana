@@ -1,5 +1,5 @@
 import { getInput, setFailed } from "@actions/core";
-import { getOctokit, context as GitHubContext } from "@actions/github";
+import { getOctokit } from "@actions/github";
 import { createAsanaClient } from "./repository/asana";
 import { getTask } from "./repository/asana/task";
 import { extractionAsanaUrl } from "./utils/regex";

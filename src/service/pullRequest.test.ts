@@ -1,7 +1,7 @@
 import { getOctokit } from '@actions/github'
 import * as pr from '../repository/github/pr'
 import { NotExistPullRequestException } from './NotExistPullRequestException'
-import { inProgressPullRequest } from '../service/pullRequest'
+import { inProgressPullRequest } from './pullRequest'
 
 describe('pullRequest', () => {
   describe('inProgressPullRequest', () => {

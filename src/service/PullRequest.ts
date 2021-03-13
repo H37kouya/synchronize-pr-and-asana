@@ -1,4 +1,4 @@
-import { getOctokit, context as GitHubContext } from "@actions/github";
+import { getOctokit } from "@actions/github";
 import { getPr, getPrNumber } from "../repository/github/pr";
 import { NotExistPullRequestException } from "./NotExistPullRequestException";
 
