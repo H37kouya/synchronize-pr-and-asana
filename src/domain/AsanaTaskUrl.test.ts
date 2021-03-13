@@ -49,6 +49,10 @@ describe("AsanaTaskUrl", () => {
       {
         arg: ASANA_URL("/foo/bar/"),
         expected: "bar"
+      },
+      {
+        arg: ASANA_URL("/foo/bar/f"),
+        expected: "bar"
       }
     ];
 
