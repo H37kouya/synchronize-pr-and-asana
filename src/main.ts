@@ -5,7 +5,7 @@ import { getTask } from "./repository/asana/task";
 import { extractionAsanaUrl } from "./regex";
 import { AsanaTaskUrl } from "./domain/AsanaTaskUrl";
 import { addLabels } from "./repository/github/label";
-import { PullRequest } from "./service/PullRequest";
+import { inProgressPullRequest } from "./service/pullRequest";
 
 // most @actions toolkit packages have async methods
 async function run() {
@@ -17,8 +17,7 @@ async function run() {
     const client = getOctokit(token);
 
     /** pr 情報の取得 */
-    const pullRequestService = new PullRequest()
-    const { pullRequest } = await pullRequestService.inProgress(client)
+    const { pullRequest } = await inProgressPullRequest(client)
 
     /**
      * PRの説明からAsanaのURLを取得する
