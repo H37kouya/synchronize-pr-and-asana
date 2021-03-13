@@ -23,9 +23,9 @@ export const extractionAsanaUrl = (
 
   return (
     linkList[0]
-      .replace(" ", "")
       // task:の削除
-      .replace("task:", "")
+      .replace("Asana task link:", "")
+      .replace(" ", "")
       // 末尾のスラッシュ削除
       .replace(/\/$/, "")
   );
