@@ -11,24 +11,24 @@ describe("regex", () => {
 
       const testCases: TestCase[] = [
         {
-          content: `task: ${ASANA_URL("/hogehoge")}`,
+          content: `Asana task link: ${ASANA_URL("/hogehoge")}`,
           expected: ASANA_URL("/hogehoge")
         },
         {
-          content: `task: ${ASANA_URL("/hogehoge/")}`,
+          content: `Asana task link: ${ASANA_URL("/hogehoge/")}`,
           expected: ASANA_URL("/hogehoge")
         },
         {
-          content: `task: ${ASANA_URL("/foo/bar")}`,
+          content: `Asana task link: ${ASANA_URL("/foo/bar")}`,
           expected: ASANA_URL("/foo/bar")
         },
         {
-          content: `task: ${ASANA_URL("/foo/bar/")}`,
+          content: `Asana task link: ${ASANA_URL("/foo/bar/")}`,
           expected: ASANA_URL("/foo/bar")
         },
         {
           content: `\
-          task: ${ASANA_URL("/foo/bar")}
+          Asana task link: ${ASANA_URL("/foo/bar")}
         `,
           expected: ASANA_URL("/foo/bar")
         }
@@ -50,14 +50,14 @@ describe("regex", () => {
       const testCases: TestCase[] = [
         {
           content: `\
-            task: ${ASANA_URL("/hogehoge")}
+            Asana task link: ${ASANA_URL("/hogehoge")}
             関係ない言葉
           `,
           expected: ASANA_URL("/hogehoge")
         },
         {
           content: `\
-            task: ${ASANA_URL("/foo/bar")}
+            Asana task link: ${ASANA_URL("/foo/bar")}
             関係ない言葉
           `,
           expected: ASANA_URL("/foo/bar")
@@ -81,7 +81,7 @@ describe("regex", () => {
         {
           content: `\
             関係ない言葉1
-            task: ${ASANA_URL("/hogehoge")}
+            Asana task link: ${ASANA_URL("/hogehoge")}
             関係ない言葉2
           `,
           expected: ASANA_URL("/hogehoge")
@@ -89,7 +89,7 @@ describe("regex", () => {
         {
           content: `\
             関係ない言葉1
-            task: ${ASANA_URL("/foo/bar")}
+            Asana task link: ${ASANA_URL("/foo/bar")}
             関係ない言葉2
           `,
           expected: ASANA_URL("/foo/bar")
@@ -114,7 +114,7 @@ describe("regex", () => {
           content: `\
             関係ない言葉1
             関係ない言葉2
-            task: ${ASANA_URL("/hogehoge")}
+            Asana task link: ${ASANA_URL("/hogehoge")}
           `,
           expected: ASANA_URL("/hogehoge")
         },
@@ -122,7 +122,7 @@ describe("regex", () => {
           content: `\
             関係ない言葉1
             関係ない言葉2
-            task: ${ASANA_URL("/foo/bar")}
+            Asana task link: ${ASANA_URL("/foo/bar")}
           `,
           expected: ASANA_URL("/foo/bar")
         }
@@ -146,17 +146,17 @@ describe("regex", () => {
           content: `\
             関係ない言葉1
             関係ない言葉2
-            task: ${ASANA_URL("/hogehoge1")}
-            task: ${ASANA_URL("/hogehoge2")}
+            Asana task link: ${ASANA_URL("/hogehoge1")}
+            Asana task link: ${ASANA_URL("/hogehoge2")}
           `,
           expected: ASANA_URL("/hogehoge1")
         },
         {
           content: `\
-            task: ${ASANA_URL("/foo/bar1")}
+            Asana task link: ${ASANA_URL("/foo/bar1")}
             関係ない言葉1
             関係ない言葉2
-            task: ${ASANA_URL("/foo/bar2")}
+            Asana task link: ${ASANA_URL("/foo/bar2")}
           `,
           expected: ASANA_URL("/foo/bar1")
         }
@@ -169,7 +169,7 @@ describe("regex", () => {
       });
     });
 
-    describe("task: で始まるAsanaのURLがないときは、undefinedである", () => {
+    describe("Asana task link: で始まるAsanaのURLがないときは、undefinedである", () => {
       type TestCase = {
         content?: string;
       };

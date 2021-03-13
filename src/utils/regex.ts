@@ -14,7 +14,7 @@ export const extractionAsanaUrl = (
     return undefined;
   }
   const linkList = content.match(
-    /task: https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/
+    /Asana task link: https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/
   );
 
   if (!linkList || linkList.length === 0) {
