@@ -3,7 +3,7 @@ import * as pr from '../../repository/github/pr';
 import { NotExistPullRequestException } from '../../service/NotExistPullRequestException';
 import { inProgressPullRequest } from '../../service/pullRequest';
 
-describe('pullRequest', () => {
+describe.skip('pullRequest', () => {
   describe('inProgressPullRequest', () => {
     it ('進行中の Pull Request を取得できる', () => {
       const PR_NUMBER: number = 10
