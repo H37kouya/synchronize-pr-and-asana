@@ -63,7 +63,7 @@ async function run() {
     ].filter(_label => _label !== null)
     console.info('addLabelList val', addLabelList)
 
-    if (addLabels.length <= 0) {
+    if (addLabelList.length <= 0) {
       console.info('追加するタグはありません')
       return
     }

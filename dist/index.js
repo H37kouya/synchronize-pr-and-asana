@@ -135,7 +135,7 @@ function run() {
                 ...taskCustomFields.map(cf => cf.display_value)
             ].filter(_label => _label !== null);
             console.info('addLabelList val', addLabelList);
-            if (label_1.addLabels.length <= 0) {
+            if (addLabelList.length <= 0) {
                 console.info('追加するタグはありません');
                 return;
             }
