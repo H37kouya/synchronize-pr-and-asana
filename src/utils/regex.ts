@@ -14,7 +14,9 @@ export const extractionAsanaUrl = (
     return undefined;
   }
   const linkList = content.match(
-    /Asana task link: https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/
+    /task: https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/
+  ) || content.match(
+    /task:https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/
   );
 
   if (!linkList || linkList.length === 0) {
@@ -23,9 +25,9 @@ export const extractionAsanaUrl = (
 
   return (
     linkList[0]
-      // task:の削除
-      .replace("Asana task link:", "")
       .replace(" ", "")
+      // task:の削除
+      .replace("task:", "")
       // 末尾のスラッシュ削除
       .replace(/\/$/, "")
   );

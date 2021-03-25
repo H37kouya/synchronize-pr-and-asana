@@ -19,7 +19,7 @@ jobs:
   synchronize-pr-and-asana:
     runs-on: ubuntu-latest
     steps:
-    - uses: H37kouya/synchronize-pr-and-asana@alpha
+    - uses: H37kouya/synchronize-pr-and-asana@v1
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
         asana-token: "${{ secrets.ASANA_PERSONAL_ACCESS_TOKEN }}"
