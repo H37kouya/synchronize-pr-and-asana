@@ -60,7 +60,7 @@ async function run() {
       ...task.tags.map(tag => tag.name).filter((tag) => !ignoreTagsList.includes(tag)),
       // @ts-ignore
       ...taskCustomFields.map(cf => cf.display_value)
-    ]
+    ].filter(_label => _label !== null)
     console.info('addLabelList val', addLabelList)
 
     await addLabels(client, pullRequest.number, addLabelList);
