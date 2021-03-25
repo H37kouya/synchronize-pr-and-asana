@@ -2,20 +2,6 @@ module.exports =
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 6695:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ASANA_URL = exports.ASANA_BASE_URL = void 0;
-exports.ASANA_BASE_URL = 'https://app.asana.com/0';
-const ASANA_URL = (path) => `${exports.ASANA_BASE_URL}${path}`;
-exports.ASANA_URL = ASANA_URL;
-
-
-/***/ }),
-
 /***/ 9190:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -24,8 +10,8 @@ exports.ASANA_URL = ASANA_URL;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AsanaTaskUrl = void 0;
 const url_1 = __nccwpck_require__(8835);
-const const_1 = __nccwpck_require__(6695);
-const url_2 = __nccwpck_require__(8615);
+const const_1 = __nccwpck_require__(3403);
+const url_2 = __nccwpck_require__(9422);
 const InvalidArgumentError_1 = __nccwpck_require__(8146);
 class AsanaTaskUrl {
     constructor(value) {
@@ -78,44 +64,6 @@ exports.InvalidArgumentError = InvalidArgumentError;
 
 /***/ }),
 
-/***/ 3947:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getPrNumber = exports.addLabels = void 0;
-const github_1 = __nccwpck_require__(5438);
-const addLabels = (client, prNumber, labels) => __awaiter(void 0, void 0, void 0, function* () {
-    yield client.issues.addLabels({
-        owner: github_1.context.repo.owner,
-        repo: github_1.context.repo.repo,
-        issue_number: prNumber,
-        labels: labels
-    });
-});
-exports.addLabels = addLabels;
-const getPrNumber = () => {
-    const pullRequest = github_1.context.payload.pull_request;
-    if (!pullRequest) {
-        return undefined;
-    }
-    return pullRequest.number;
-};
-exports.getPrNumber = getPrNumber;
-
-
-/***/ }),
-
 /***/ 3109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -135,29 +83,23 @@ const core_1 = __nccwpck_require__(2186);
 const github_1 = __nccwpck_require__(5438);
 const asana_1 = __nccwpck_require__(7108);
 const task_1 = __nccwpck_require__(5294);
-const helper_1 = __nccwpck_require__(3947);
-const regex_1 = __nccwpck_require__(7833);
+const regex_1 = __nccwpck_require__(4689);
 const AsanaTaskUrl_1 = __nccwpck_require__(9190);
+const label_1 = __nccwpck_require__(465);
+const pullRequest_1 = __nccwpck_require__(583);
 // most @actions toolkit packages have async methods
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const token = core_1.getInput("repo-token", { required: true });
             const asanaClientToken = core_1.getInput("asana-token", { required: true });
+            // ラベルに反映させないタグ
+            const ignoreTags = core_1.getInput("ignore-tags");
+            // 追加するカスタムフィールド
             const customFields = core_1.getInput("custom-fields");
-            const prNumber = helper_1.getPrNumber();
-            if (!prNumber) {
-                console.log("Could not get pull request number from context, exiting");
-                return;
-            }
-            console.info(`PrNumber=${prNumber}`);
             const client = github_1.getOctokit(token);
-            const { data: pullRequest } = yield client.pulls.get({
-                owner: github_1.context.repo.owner,
-                repo: github_1.context.repo.repo,
-                pull_number: prNumber
-            });
-            console.info(pullRequest);
+            /** pr 情報の取得 */
+            const { pullRequest } = yield pullRequest_1.inProgressPullRequest(client);
             /**
              * PRの説明からAsanaのURLを取得する
              */
@@ -166,65 +108,41 @@ function run() {
                 console.info("asanaのURLが存在しませんでした。");
                 return;
             }
+            /**
+             * PR本文からタスクGidの取得
+             */
             const asanaTaskUrlEntity = AsanaTaskUrl_1.AsanaTaskUrl.of(asanaTaskUrl);
             const taskGid = asanaTaskUrlEntity.taskGid();
+            if (!taskGid) {
+                console.info("taskGidが取得できませんでした");
+                return;
+            }
             console.info(taskGid);
             const asanaClient = asana_1.createAsanaClient(asanaClientToken);
             const task = yield task_1.getTask({
                 client: asanaClient,
                 taskGid
             });
-            // console.log(task);
+            console.log('task item', task.name, task.tags, task.custom_fields);
+            const ignoreTagsList = ignoreTags ? ignoreTags.split(',') : [];
             const allowCustomFields = customFields ? customFields.split(',') : [];
+            console.info('process list val', ignoreTagsList, allowCustomFields);
             const taskCustomFields = task.custom_fields.filter(cf => allowCustomFields.includes(cf.name));
-            yield helper_1.addLabels(client, prNumber, [
-                ...task.tags.map(tag => tag.name),
+            console.info('taskCustomFields val', taskCustomFields);
+            const addLabelList = [
+                ...task.tags.map(tag => tag.name).filter((tag) => !ignoreTagsList.includes(tag)),
                 // @ts-ignore
                 ...taskCustomFields.map(cf => cf.display_value)
-            ]);
+            ];
+            console.info('addLabelList val', addLabelList);
+            yield label_1.addLabels(client, pullRequest.number, addLabelList);
         }
-        catch (error) {
-            core_1.setFailed(error.message);
+        catch (e) {
+            core_1.setFailed(e.message);
         }
     });
 }
 run();
-
-
-/***/ }),
-
-/***/ 7833:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.extractionAsanaUrl = void 0;
-/**
- * AsanaのURLを文中から取得する。
- * また、末尾のスラッシュは必ず存在しない。
- *
- * 取得する条件はtask: から始まるもの
- * task: ASANA_URL
- *
- * @param content
- */
-const extractionAsanaUrl = (content) => {
-    if (!content) {
-        return undefined;
-    }
-    const linkList = content.match(/task: https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/);
-    if (!linkList || linkList.length === 0) {
-        return undefined;
-    }
-    return (linkList[0]
-        .replace(" ", "")
-        // task:の削除
-        .replace("task:", "")
-        // 末尾のスラッシュ削除
-        .replace(/\/$/, ""));
-};
-exports.extractionAsanaUrl = extractionAsanaUrl;
 
 
 /***/ }),
@@ -237,7 +155,11 @@ exports.extractionAsanaUrl = extractionAsanaUrl;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createAsanaClient = void 0;
 const asana_1 = __nccwpck_require__(3565);
-const createAsanaClient = (accessToken) => asana_1.Client.create().useAccessToken(accessToken);
+const createAsanaClient = (accessToken) => asana_1.Client.create({
+    "defaultHeaders": {
+        "asana-enable": "new_user_task_lists"
+    }
+}).useAccessToken(accessToken);
 exports.createAsanaClient = createAsanaClient;
 
 
@@ -268,7 +190,184 @@ exports.getTask = getTask;
 
 /***/ }),
 
-/***/ 8615:
+/***/ 465:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.addLabels = void 0;
+const github_1 = __nccwpck_require__(5438);
+const addLabels = (client, prNumber, labels) => __awaiter(void 0, void 0, void 0, function* () {
+    yield client.issues.addLabels({
+        owner: github_1.context.repo.owner,
+        repo: github_1.context.repo.repo,
+        issue_number: prNumber,
+        labels: labels
+    });
+});
+exports.addLabels = addLabels;
+
+
+/***/ }),
+
+/***/ 8070:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getPr = exports.getPrNumber = void 0;
+const github_1 = __nccwpck_require__(5438);
+const getPrNumber = () => {
+    const pullRequest = github_1.context.payload.pull_request;
+    if (!pullRequest) {
+        return undefined;
+    }
+    return pullRequest.number;
+};
+exports.getPrNumber = getPrNumber;
+const getPr = (client, prNumber) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data } = yield client.pulls.get({
+        owner: github_1.context.repo.owner,
+        repo: github_1.context.repo.repo,
+        pull_number: prNumber
+    });
+    return {
+        pullRequest: data
+    };
+});
+exports.getPr = getPr;
+
+
+/***/ }),
+
+/***/ 5244:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NotExistPullRequestException = void 0;
+class NotExistPullRequestException extends Error {
+    constructor(e) {
+        super(e);
+        this.name = new.target.name;
+        Object.setPrototypeOf(this, new.target.prototype);
+    }
+}
+exports.NotExistPullRequestException = NotExistPullRequestException;
+
+
+/***/ }),
+
+/***/ 583:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.inProgressPullRequest = void 0;
+const pr_1 = __nccwpck_require__(8070);
+const NotExistPullRequestException_1 = __nccwpck_require__(5244);
+const inProgressPullRequest = (client) => __awaiter(void 0, void 0, void 0, function* () {
+    const prNumber = pr_1.getPrNumber();
+    console.info(`PrNumber=${prNumber}`);
+    if (!prNumber || prNumber < 0) {
+        throw new NotExistPullRequestException_1.NotExistPullRequestException("Could not get pull request number from context, exiting");
+    }
+    try {
+        const { pullRequest } = yield pr_1.getPr(client, prNumber);
+        console.info(pullRequest);
+        return { pullRequest };
+    }
+    catch (e) {
+        throw new NotExistPullRequestException_1.NotExistPullRequestException(e.message);
+    }
+});
+exports.inProgressPullRequest = inProgressPullRequest;
+
+
+/***/ }),
+
+/***/ 3403:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ASANA_URL = exports.ASANA_BASE_URL = void 0;
+exports.ASANA_BASE_URL = 'https://app.asana.com/0';
+const ASANA_URL = (path) => `${exports.ASANA_BASE_URL}${path}`;
+exports.ASANA_URL = ASANA_URL;
+
+
+/***/ }),
+
+/***/ 4689:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.extractionAsanaUrl = void 0;
+/**
+ * AsanaのURLを文中から取得する。
+ * また、末尾のスラッシュは必ず存在しない。
+ *
+ * 取得する条件はtask: から始まるもの
+ * task: ASANA_URL
+ *
+ * @param content
+ */
+const extractionAsanaUrl = (content) => {
+    if (!content) {
+        return undefined;
+    }
+    const linkList = content.match(/task: https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/) || content.match(/task:https?:\/\/app.asana.com\/0\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+/);
+    if (!linkList || linkList.length === 0) {
+        return undefined;
+    }
+    return (linkList[0]
+        .replace(" ", "")
+        // task:の削除
+        .replace("task:", "")
+        // 末尾のスラッシュ削除
+        .replace(/\/$/, ""));
+};
+exports.extractionAsanaUrl = extractionAsanaUrl;
+
+
+/***/ }),
+
+/***/ 9422:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -277,11 +376,16 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getLastPath = void 0;
 const url_1 = __nccwpck_require__(8835);
 const getLastPath = (url) => {
-    // 末尾のスラッシュを削除
-    const formatUrl = url.replace(/\/$/, "");
-    const urlEntity = new url_1.URL(formatUrl);
-    const paths = urlEntity.pathname.split("/").reverse();
-    return paths[0];
+    try {
+        // 末尾のスラッシュを削除
+        const formatUrl = url.replace(/\/$/, "");
+        const urlEntity = new url_1.URL(formatUrl);
+        const paths = urlEntity.pathname.split("/").reverse();
+        return paths[0] || undefined;
+    }
+    catch (e) {
+        throw new Error("有効なURLではありません");
+    }
 };
 exports.getLastPath = getLastPath;
 
