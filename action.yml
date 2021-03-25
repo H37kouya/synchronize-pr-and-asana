@@ -7,6 +7,8 @@ inputs:
   asana-token:
     description: 'Asana personal access token'
     required: true
+  ignore-tags:
+      description: 'ラベルに反映させないタグ example: 優先度,ステータス'
   custom-fields:
       description: 'カスタムフィールドの値 example: 優先度,ステータス'
 outputs:

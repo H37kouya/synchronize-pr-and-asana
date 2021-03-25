@@ -35,6 +35,7 @@ Various inputs are defined in action.yml to let you configure the synchronize-pr
 | ---|---|---|
 | repo-token | Token to use to authorize label changes. Typically the GITHUB_TOKEN secret | N/A |
 | asana-token | Token to use to authorize asana. | N/A |
+| ignore-tags | ラベルに反映させないタグ <br> example: "優先度,ステータス" | '' |
 | custom-fields | The name of the tag you want to reflect in the PR <br> example: "優先度,ステータス" | '' |
 
 ## Code in developer
