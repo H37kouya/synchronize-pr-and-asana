@@ -135,6 +135,10 @@ function run() {
                 ...taskCustomFields.map(cf => cf.display_value)
             ].filter(_label => _label !== null);
             console.info('addLabelList val', addLabelList);
+            if (label_1.addLabels.length <= 0) {
+                console.info('追加するタグはありません');
+                return;
+            }
             yield label_1.addLabels(client, pullRequest.number, addLabelList);
         }
         catch (e) {
